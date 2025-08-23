@@ -33,30 +33,7 @@ def combine_dict(d1, d2):
     return d2
     
 
-#def match_each(preds, trues, matched_idx, ):
-#    '''
-#    first match_each modification that we did
-#    this resolved the halting problem for large permutations, but
-#    couldn't solve the exact problem pertaining to aromatic system
-#    '''
-#    import random
-#    num_samples = 500
-#    #perms = list(permutations(preds, len(trues))) #for a large number of preds this stops, n!/(n-r)! permutation
-#    all_perms = permutations(preds, len(trues))
-#    perms = list(islice(all_perms, num_samples))
-#    #perms = random.sample(all_perms, min(num_samples, len(all_perms))) #can't do with the generator
-#    if len(preds) < len(trues):
-#        return []
-#
-#    ts = [item for elem in trues for item in elem]
-#    ms = []
-#    for perm in perms:
-#        ps = [item for elem in perm for item in elem]
-#        m = {t:p for t, p in zip(ts, ps) if t != -1}
-#        combined_dict = combine_dict(m, copy.copy(matched_idx))
-#        if combined_dict:
-#            ms.append(combined_dict)
-#    return ms
+
 
 
 def match_each(preds, trues, matched_idx):
@@ -107,28 +84,6 @@ def match_each(preds, trues, matched_idx):
 
 
 
-#def match_each(preds, trues, matched_idx):
-#    from itertools import permutations
-#    import copy
-#
-#    ms = []  # Initialize empty match list
-#
-#    if len(trues) <= 6:
-#        if len(preds) < len(trues):
-#            return []
-#
-#        all_perms = permutations(preds, len(trues))
-#        ts = [item for elem in trues for item in elem]
-#
-#        for perm in all_perms:
-#            ps = [item for elem in perm for item in elem]
-#            m = {t: p for t, p in zip(ts, ps) if t != -1}
-#            combined_dict = combine_dict(m, copy.copy(matched_idx))
-#            if combined_dict:
-#                ms.append(combined_dict)
-#
-#    # If len(trues) > 6, do nothing (but function continues and returns empty list)
-#    return ms
 
 
 
@@ -163,26 +118,7 @@ def graph_isomorphism_match(trues, preds):
 
 
 
-'''
-original match_each function
 
-def match_each(preds, trues, matched_idx):
-    #this is combination based matching
-    if len(preds) < len(trues):
-        return []
-    
-    ts = [item for elem in trues for item in elem]
-    ms = []
-    
-    for comb in combinations(preds, len(trues)):
-        ps = [item for elem in comb for item in elem]
-        m = {t: p for t, p in zip(ts, ps) if t != -1}
-        combined_dict = combine_dict(m, copy.copy(matched_idx))
-        if combined_dict:
-            ms.append(combined_dict)
-    
-    return ms
-'''
 
 def bidirect_len(bonds, return_len = True):
     bidirected = copy.copy(bonds)
@@ -229,12 +165,6 @@ class Collector():
         self.used_idx = defaultdict(list)
         self.predicted_roles = dict()
 
-    #def clean_small_frags(self, products):
-    #    if '[IH3]' in products:
-    #        products = products.replace('[IH3]', '[IH]')
-    #    return  '.'.join([product for product in products.split('.') if Chem.MolFromSmiles(product).GetNumAtoms() >= self.min_n_atoms])
-        
-        
     def clean_small_frags(self, products):
         # Replace '[IH3]' with '[IH]' in the products string
         if '[IH3]' in products:
