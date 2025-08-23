@@ -69,15 +69,15 @@ python scripts/TrainWithAcc.py -d my_data -m my_model
 
 ### (a) Single-step prediction
 ```bash
-python SingleStepPred.py -d my_data -m my_model
+python SingleStepPred.py 
 ```
 
 ### (b) Full ID-CRM prediction
-1. Train the Reaction Classifier  
+1. Train the Reaction Classifier. Load the trained model in the reactivity_classifier_AttentiveFP.py file
 2. Run inference:  
 
 ```bash
-python AttFP_ID_CRM_infer.py -d my_data -m my_model
+python AttFP_ID_CRM_infer.py 
 ```
 
 ---
