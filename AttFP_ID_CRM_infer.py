@@ -16,7 +16,7 @@ from rdkit import Chem
 import ast
 import math
 
-from my_inference_utils import  process_results, calculate_top_k_accuracies, compute_top_n_accuracy
+from my_inference_utils import  process_results, compute_top_n_accuracy
 #----------------------------------CHANGE HERE-----------------------------
 dataset = 'my_data' # get the info of derived templates
 scenario = 'my_model'
