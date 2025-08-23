@@ -9,20 +9,16 @@ from dgllife.utils import smiles_to_bigraph
 from dgllife.utils import EarlyStopping, Meter
 from dgllife.utils import AttentiveFPAtomFeaturizer
 from dgllife.utils import AttentiveFPBondFeaturizer
-
 import torch.nn as nn
 from dgllife.model import model_zoo
 from dgllife.utils import smiles_to_bigraph
 from dgllife.model import AttentiveFPGNN
 from dgllife.model import AttentiveFPReadout
-
-
 import torch
 import os
 import random
 import numpy as np
 import ast
-
 import matplotlib
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
@@ -34,7 +30,6 @@ from rdkit.Chem.Draw import IPythonConsole
 from IPython.display import SVG, display
 from rdkit.Chem import rdDepictor
 from rdkit.Chem.Draw import rdMolDraw2D
-
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
@@ -208,7 +203,7 @@ e_feats = bond_featurizer.feat_size('he')
 #model_path = 'trained_classifier_wo_augm_10_07_25_WCE_epoch20'
 
 #-------------id trained model-----
-model_path = 'ID_trained_classifier_wo_augm_10_07_25_WCE_epoch10' 
+model_path = 'ID_trained_classifier_wo_augm_10_07_25_WCE_epoch10'  #HERE YOU HAVE TO GIVE THE TRAININED MODEL FILE PATH
 print('This model is used:', model_path)
 
 
