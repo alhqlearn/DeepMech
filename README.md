@@ -8,7 +8,7 @@ DeepMech is an interpretable graph-based deep learning framework for predicting 
 
 ```bash
 # Clone repository
-git clone ***
+git clone https://github.com/alhqlearn/DeepMech.git
 cd DeepMech
 
 # Create and activate virtual environment
