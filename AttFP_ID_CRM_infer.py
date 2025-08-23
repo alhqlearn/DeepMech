@@ -17,9 +17,10 @@ import ast
 import math
 
 from my_inference_utils import  process_results, calculate_top_k_accuracies, compute_top_n_accuracy
-#----------------------------------Loading init_DeepMech-----------------------------
+#----------------------------------CHANGE HERE-----------------------------
 dataset = 'my_data' # get the info of derived templates
 scenario = 'my_model'
+#---------------------------------------------------------------------------------
 device = 'cuda' # cpu or cuda
 model_name = 'DeepMech_%s' % scenario
 model_path = 'models/%s.pth' % model_name
@@ -124,10 +125,10 @@ results = beam_search_last_element2(start_sequence, model_predict, beam_width=2,
 x = results[0][1].split(' ')
 #print(results)
 
-#-------------------------------------------Data Testing-----------------------
-df = pd.read_csv("./Sampled_oob_crm_10_12_24_wo_atom_mapp.csv")
-
+#------------------------------------------CHANGE HERE: GIVE THE PATH TO THE CSV FILE-----------------------
+df = pd.read_csv("./crm_input.csv") 
 print('total samples number:', df.shape)
+#--------------------------------------------------------------------------------------------------------------
 
 true_reactants = []
 true_products = []
@@ -164,7 +165,7 @@ pred_df['true_mech'] =  df['mechanisms']
 
 top_n_accuracy = compute_top_n_accuracy(pred_df)
 print('new accuracy:', top_n_accuracy)
-#pred_df.to_csv('./data/Split42/AttFp_ID_CRM_pred_out110725.csv', index=False)
+#pred_df.to_csv('./data/my_data/crm_output.csv', index=False)
 
 
 
