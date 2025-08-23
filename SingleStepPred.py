@@ -4,7 +4,6 @@ import os, sys
 import numpy as np
 import pandas as pd
 sys.path.append('scripts')
-
 from rdkit.Chem import PandasTools
 from Synthesis import init_DeepMech, predict_product
 import heapq
@@ -20,26 +19,18 @@ from rdkit.Chem import MolToSmiles
 from rdkit.Chem.MolStandardize import rdMolStandardize
 import pandas as pd
 from tqdm import tqdm
-
 from my_inference_utils import  process_results
 
 
-dataset = 'PreBioSmall' # get the info of derived templates
-scenario = 'PreBioSmall'
-
-device = 'cuda:2' # cpu or cuda
+dataset = 'my_data' # get the info of derived templates
+scenario = 'my_model'
+device = 'cuda' # cpu or cuda
 model_name = 'DeepMech_%s' % scenario
 model_path = 'models/%s.pth' % model_name
 config_path = 'data/configs/default_config'
 data_dir = 'data/%s' % dataset
-
 args = {'data_dir': data_dir, 'model_path': model_path, 'config_path': config_path, 'device': device, 'mode': 'test'}
 modelx, graph_functions, template_dicts, template_infos = init_DeepMech(args)
-#model_parameters = filter(lambda p: p.requires_grad, modelx.parameters())
-#params = sum([np.prod(p.size()) for p in model_parameters])
-#print ('# model parameters: %.2fM' % (params/1000000))
-
-
 
 def model_predict(reactants):
     sep = False
@@ -48,10 +39,8 @@ def model_predict(reactants):
                                            template_dicts, template_infos,
                                            verbose = verbose, sep = sep, collect_n = 100)
 
-    #print('before:', results_dict)
     #adding the heuristic here:
     results_dict = process_results(results_dict)
-    #print('after:', results_dict)
     products = []
     scores = []
     for key, value in results_dict.items():
@@ -185,11 +174,9 @@ def process_file(file_path, output_csv, max_k=5):
 # Example usage
 import time
 st_time = time.time()
-
-input_file = "./data/test.txt"  # Your .txt file containing reaction pairs
-output_file = './data/SingleStepPredOut.csv' # Output CSV file to save predictions
+input_file = "./data/my_data/test.txt"  # Your .txt file containing reaction pairs
+output_file = './data/my_data/SingleStepPredOut.csv' # Output CSV file to save predictions
 predictions, accuracy = process_file(input_file, output_file, max_k=5)
-
 en_time = time.time()
 print('Time required:', (en_time-st_time)/60)
 
