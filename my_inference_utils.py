@@ -6,7 +6,6 @@ import os, sys
 import numpy as np
 import pandas as pd
 sys.path.append('scripts')
-
 from rdkit.Chem import PandasTools
 import heapq
 from tqdm import tqdm
@@ -15,11 +14,6 @@ import copy
 from rdkit import Chem
 import ast
 import math
-
-
-
-
-
 import ast
 import pandas as pd
 
@@ -115,54 +109,6 @@ def our_canonicalizer(smiles):
             return Chem.MolToSmiles(mol, isomericSmiles=True)
     else:
         return ''
-
-
-def calculate_top_k_accuracies(df, predicted_crms_all, max_k=5):
-    scores = [0] * max_k  # Initialize scores for top-1 to top-max_k
-    total_rows = len(df)  # Total number of rows in the dataframe
-    
-    for idx, mechanisms_row in enumerate(df['mechanisms']):
-        # Convert string representation to a Python list
-        true_smiles = eval(mechanisms_row)  # Caution: Use eval only with trusted data
-        all_predictions = predicted_crms_all[idx]  # Get all predictions for the current row
-
-        # Canonicalize the true SMILES
-        def canonicalize_smiles(smiles_list):
-            if smiles_list is None:  # Handle NoneType gracefully
-                return []
-            canonical = []
-            for smile in smiles_list:
-                mol = Chem.MolFromSmiles(smile)
-                if mol:  # Check if MolFromSmiles succeeded
-                    canonical.append(Chem.MolToSmiles(mol, canonical=True, isomericSmiles=False))
-                else:
-                    canonical.append(None)  # Mark invalid SMILES as None
-            return canonical
-
-        true_canonical = canonicalize_smiles(true_smiles)
-
-        # Iterate over the top-k range
-        for k in range(1, max_k + 1):
-            top_k_predictions = [pred for pred in all_predictions[:k] if pred is not None]
-
-            for prediction in top_k_predictions:
-                if not isinstance(prediction, list):  # Skip if the prediction isn't a list of SMILES
-                    continue
-                
-                predicted_canonical = canonicalize_smiles(prediction)
-                
-                # Ensure all corresponding SMILES are valid and check equality
-                valid_comparisons = [
-                    t == p for t, p in zip(true_canonical, predicted_canonical) if t is not None and p is not None
-                ]
-
-                if len(valid_comparisons) == len(true_smiles) and all(valid_comparisons):
-                    scores[k-1] += 1
-                    break  # Break as we only count one match per row for this k
-    
-    # Convert scores to percentages
-    percentages = [(score / total_rows) * 100 for score in scores]
-    return percentages
 
 
 
