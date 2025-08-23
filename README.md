@@ -12,8 +12,8 @@ git clone https://github.com/alhqlearn/DeepMech.git
 cd DeepMech
 
 # Create and activate virtual environment
-conda create -c conda-forge -n rdenv python=3.6 -y
-conda activate rdenv
+conda create -c conda-forge -n deepmech python=3.6 -y
+conda activate deepmech
 
 # Install dependencies
 conda install pytorch cudatoolkit=11.3 -c pytorch -y
