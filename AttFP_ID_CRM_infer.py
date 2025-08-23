@@ -1,0 +1,221 @@
+
+
+
+import os, sys
+import numpy as np
+import pandas as pd
+sys.path.append('scripts')
+
+from rdkit.Chem import PandasTools
+from Synthesis import init_DeepMech, predict_product
+import heapq
+from tqdm import tqdm
+import torch
+import copy
+from rdkit import Chem
+import ast
+import math
+
+from my_inference_utils import  process_results, calculate_top_k_accuracies, compute_top_n_accuracy
+#----------------------------------Loading init_DeepMech-----------------------------
+
+dataset = 'Split42' # get the info of derived templates
+scenario = 'Split42'
+device = 'cuda:3' # cpu or cuda
+model_name = 'DeepMech_%s' % scenario
+model_path = 'models/%s.pth' % model_name
+config_path = 'data/configs/default_config'
+data_dir = 'data/%s' % dataset
+
+args = {'data_dir': data_dir, 'model_path': model_path, 'config_path': config_path, 'device': device, 'mode': 'test'}
+modelx, graph_functions, template_dicts, template_infos = init_DeepMech(args)
+
+#model_parameters = filter(lambda p: p.requires_grad, modelx.parameters())
+#params = sum([np.prod(p.size()) for p in model_parameters])
+#print ('# model parameters: %.2fM' % (params/1000000))
+
+#-------------------------- Loading Classifier--------------------------------------
+from reactivity_classifier_AttentiveFP import predict_reactivity
+print('classifier loaded')
+#-------------------------------------Functions--------------------------------
+def beam_search_last_element(start, expand_fn, eos_classifier, beam_width=2, max_steps=10):
+    candidates = [(1.0, start)]  # (probability, sequence)
+    finished = []  # Store completed sequences
+    for step in range(max_steps):
+        new_candidates = []
+        all_finished = True  # Assume all sequences are finished initially
+
+        for prob, seq in candidates:
+            last_word = seq.split()[-1]  # Extract the last word
+            is_eos = predict(eos_classifier, [last_word], device)
+            if not is_eos:
+                finished.append((prob, seq))
+            else:
+                # Sequence is not finished; expand it
+                all_finished = False
+                #print('input to the model_predict:', last_word)
+                outputs = expand_fn(last_word)
+                for new_word, new_prob in outputs:
+                    # Append the new word to the full sequence
+                    full_seq = seq + " " + new_word
+                    # Check if the new word ends in EOS
+                    is_eos = predict(eos_classifier, [new_word.split()[-1]], device)
+                    if not is_eos:
+                        finished.append((prob * new_prob, full_seq))
+                    else:
+                        heapq.heappush(new_candidates, (prob * new_prob, full_seq))
+        if all_finished:
+            # Stop if all sequences are finished
+            break
+        # Keep the top beam_width candidates for the next step
+        candidates = heapq.nlargest(beam_width, new_candidates, key=lambda x: x[0])
+        #print('candidates:\n', candidates)
+    # Combine finished sequences and any remaining candidates
+    finished.extend(candidates)
+    return sorted(finished, key=lambda x: (x[0], len(x[1].split())), reverse=True)
+
+
+def beam_search_last_element2(start, expand_fn, beam_width=2, max_steps=10, alpha=1.0):
+    """
+    Beam search with length normalization to balance sequence length.
+    Args:
+        start (str): Starting sequence.
+        expand_fn (callable): Function to expand a given word into next-word probabilities.
+        eos_classifier (callable): Function to predict whether a word is the end of a sequence.
+        beam_width (int): Number of candidates to keep at each step.
+        max_steps (int): Maximum number of steps to run the search.
+        alpha (float): Length normalization factor. Typically 0.6 <= alpha <= 1.0.
+    Returns:
+        list: Sorted list of (normalized_probability, sequence).
+    """
+    candidates = [(0.0, start)]  # (log_prob, sequence)
+    finished = []  # Store completed sequences
+
+    for step in range(max_steps):
+        new_candidates = []
+        all_finished = True  # Assume all sequences are finished initially
+
+        for log_prob, seq in candidates:
+            last_word = seq.split()[-1]  # Extract the last word
+            #is_eos = eos_classifier([last_word])  # Check if sequence should end
+            is_eos = np.array(predict_reactivity(last_word))
+            #print('is_eos ', is_eos)
+            #print('is_eos type', type(is_eos))
+
+            if not is_eos:
+                # Sequence is finished, apply length normalization
+                length_norm = (len(seq.split()) ** alpha)
+                normalized_score = log_prob / length_norm
+                finished.append((normalized_score, seq))
+            else:
+                # Sequence is not finished; expand it
+                all_finished = False
+                outputs = expand_fn(last_word)
+                
+                for new_word, new_prob in outputs:
+                    # Update sequence and log probability
+                    full_seq = seq + " " + new_word
+                    new_log_prob = log_prob + math.log(new_prob)
+                    new_candidates.append((new_log_prob, full_seq))
+
+        if all_finished:
+            # Stop if all sequences are finished
+            break
+        
+        # Keep the top beam_width candidates for the next step
+        candidates = heapq.nlargest(beam_width, new_candidates, key=lambda x: x[0])
+        
+    # Combine finished sequences and any remaining candidates
+    length_normalized = [
+        (log_prob / (len(seq.split()) ** alpha), seq)
+        for log_prob, seq in candidates
+    ]
+    finished.extend(length_normalized)
+
+    # Return sorted finished sequences based on normalized probabilities
+    return sorted(finished, key=lambda x: x[0], reverse=True)
+
+
+def model_predict(reactants):
+    sep = False
+    verbose = False
+    results_df, results_dict = predict_product(args, reactants, modelx, graph_functions,
+                                           template_dicts, template_infos,
+                                           verbose = verbose, sep = sep, collect_n = 100)
+
+    #print('before:', results_dict)
+    #adding the heuristic here:
+    results_dict = process_results(results_dict)
+    #print('after:', results_dict)
+    products = []
+    scores = []
+    for key, value in results_dict.items():
+        if key[:3] == 'Top':
+            only_product = results_dict[key]['product']
+            products.append(only_product)
+            scores.append(results_dict[key]['score'])
+    output = [(i, j) for i, j in zip(products[:5], scores[:5])]
+    return output
+
+#-----------------------------------------------------------------------------
+
+start_sequence = "Cc1c(Cl)cccc1.CN(c2ccc([P+]([C@]34C[C@H]5C[C@@H](C4)C[C@@H](C3)C5)([C@]67C[C@H]8C[C@@H](C7)C[C@@H](C6)C8)[Pd])cc2)C.CC(C)([O-])C.CCCCN.[Na+]"
+start_sequence = 'O=C1NC(C2=CC=CC=C21)=O.NN.CCI.[K+].[H-]'
+start_sequence = 'O=C(C1=CC=CC2=C1C3=CC=C2F)N(C4=CC=CC=C4)C3=O.C56=CC=CC=C5[N-]C7=C(C=CC=C7)S6'
+start_sequence = 'O=c1n(c2ccccc2)c([O-])c3c4c1cccc4C(F)(N5c6c(Sc7c5cccc7)cccc6)C=C3'
+start_sequence = 'C1([P+](C2=CC=CC=C2)(C3=CC=CC=C3)[Pd][P+](C4=CC=CC=C4)(C5=CC=CC=C5)C6=CC=CC=C6)=CC=CC=C1.CN1C=CN=C1.O=C([O-])[O-].IC2=CC=CC=C2.[K+].[K+]'
+start_sequence = 'CC(Br)(C)C.[OH3+].O'
+beam_width = 2
+results = beam_search_last_element2(start_sequence, model_predict, beam_width=2, max_steps=10, alpha=0.5)
+x = results[0][1].split(' ')
+#print(results)
+
+#-------------------------------------------Data Testing-----------------------
+df = pd.read_csv("/raid/aiccg/rbsunoj/ajnabi/new_environment_code/CRM_generalized/Gen_new_mechanism_mechfinder/FINAL_MECHANISM_06_01_25/full_set/Sampled_oob_crm_10_12_24_wo_atom_mapp.csv")
+#df = df.rename(columns={'mechanisms_unmapped':'mechanisms'})
+
+print('total samples number:', df.shape)
+
+true_reactants = []
+true_products = []
+
+for i in df['mechanisms']:
+    true_reactants.append(ast.literal_eval(i)[0])
+    true_products.append(ast.literal_eval(i)[-1])
+
+print(len(true_reactants), len(true_products))
+
+
+#-------------------------------Actual Prediction------------------------------------
+max_length = 10
+predicted_crms_all = []
+
+for start_sequence in tqdm(true_reactants):
+    try:
+        results = beam_search_last_element2(start_sequence, model_predict, beam_width=2, max_steps=max_length, alpha=0.5)
+        predicted_crms = [i[1].split(' ') for i in results]
+
+        # Normalize length: truncate or pad with None
+        if len(predicted_crms) > max_length:
+            predicted_crms = predicted_crms[:max_length]  # Truncate to max_length
+        else:
+            predicted_crms += [None] * (max_length - len(predicted_crms))  # Pad with None
+
+        predicted_crms_all.append(predicted_crms)
+    except Exception as e:
+        # Append a list of None to match max_length in case of exception
+        predicted_crms_all.append([None] * max_length)
+
+
+#accuracies = calculate_top_k_accuracies(df, predicted_crms_all, max_k=10)
+#print(f"Top-k accuracies: {accuracies}")
+pred_df = pd.DataFrame(predicted_crms_all, columns = ['top'+str(i) for i in range(1,max_length+1)])
+pred_df['true_mech'] =  df['mechanisms']
+
+#top_n_accuracy = compute_top_n_accuracy(pred_df)
+#print('new accuracy:', top_n_accuracy)
+
+pred_df.to_csv('./data/Split42/AttFp_ID_CRM_pred_out110725.csv', index=False)
+
+
+
