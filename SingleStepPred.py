@@ -22,15 +22,6 @@ from tqdm import tqdm
 from my_inference_utils import  process_results
 
 
-dataset = 'my_data' # get the info of derived templates
-scenario = 'my_model'
-device = 'cuda' # cpu or cuda
-model_name = 'DeepMech_%s' % scenario
-model_path = 'models/%s.pth' % model_name
-config_path = 'data/configs/default_config'
-data_dir = 'data/%s' % dataset
-args = {'data_dir': data_dir, 'model_path': model_path, 'config_path': config_path, 'device': device, 'mode': 'test'}
-modelx, graph_functions, template_dicts, template_infos = init_DeepMech(args)
 
 def model_predict(reactants):
     sep = False
@@ -174,8 +165,22 @@ def process_file(file_path, output_csv, max_k=5):
 # Example usage
 import time
 st_time = time.time()
+
+#------------CHANGE HERE-----------------------------------------
+dataset = 'my_data' # get the info of derived templates
+scenario = 'my_model'
+#--------------------------------------------------------------
+device = 'cuda' # cpu or cuda
+model_name = 'DeepMech_%s' % scenario
+model_path = 'models/%s.pth' % model_name
+config_path = 'data/configs/default_config'
+data_dir = 'data/%s' % dataset
+args = {'data_dir': data_dir, 'model_path': model_path, 'config_path': config_path, 'device': device, 'mode': 'test'}
+modelx, graph_functions, template_dicts, template_infos = init_DeepMech(args)
+#-----------------------CHANGE HERE--------------------------
 input_file = "./data/my_data/test.txt"  # Your .txt file containing reaction pairs
 output_file = './data/my_data/SingleStepPredOut.csv' # Output CSV file to save predictions
+#----------------------------------------------------------------
 predictions, accuracy = process_file(input_file, output_file, max_k=5)
 en_time = time.time()
 print('Time required:', (en_time-st_time)/60)
