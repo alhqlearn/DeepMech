@@ -14,7 +14,7 @@ from functools import partial
 from scripts.dataset import combine_reactants, get_bonds, get_adm
 from scripts.utils import init_featurizer, load_model, pad_atom_distance_matrix, predict
 from scripts.get_edit import combined_edit
-from LocalTemplate.template_collector import Collector
+from MechTemplate.template_collector import Collector
 
 def load_templates(args):
     template_dicts = {}
