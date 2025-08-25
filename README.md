@@ -67,10 +67,10 @@ Run preprocessing scripts inside `./preprocessing`:
 
 ```bash
 # Step 1: Extract information from training data
-python preprocessing/Extract_from_train_data.py -d my_data
+python preprocessing/Extract_from_train_data.py -d ID_Split42
 
 # Step 2: Preprocess dataset
-python preprocessing/Run_preprocessing.py -d my_data
+python preprocessing/Run_preprocessing.py -d ID_Split42
 ```
 
 ---
@@ -80,7 +80,7 @@ python preprocessing/Run_preprocessing.py -d my_data
 Train your model using:
 
 ```bash
-python scripts/TrainWithAcc.py -d my_data -m my_model
+python scripts/TrainWithAcc.py -d ID_Split42 -m my_model
 ```
 
 ---
@@ -107,7 +107,7 @@ python AttFP_ID_CRM_infer.py
 For predicting complete CRMs, run:
 
 ```bash
-python xyz.py -d my_data -m my_model
+python xyz.py -d ID_Split42 -m my_model
 ```
 
 ---
