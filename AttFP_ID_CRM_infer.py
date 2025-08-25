@@ -18,8 +18,8 @@ import math
 
 from my_inference_utils import  process_results, compute_top_n_accuracy
 #----------------------------------CHANGE HERE-----------------------------
-dataset = 'my_data' # get the info of derived templates
-scenario = 'my_model'
+dataset = 'ID_Split42' # get the info of derived templates
+scenario = 'Split42'
 #---------------------------------------------------------------------------------
 device = 'cuda' # cpu or cuda
 model_name = 'DeepMech_%s' % scenario
@@ -126,7 +126,7 @@ x = results[0][1].split(' ')
 #print(results)
 
 #------------------------------------------CHANGE HERE: GIVE THE PATH TO THE CSV FILE-----------------------
-df = pd.read_csv("./crm_input.csv") 
+df = pd.read_csv("") 
 print('total samples number:', df.shape)
 #--------------------------------------------------------------------------------------------------------------
 
