@@ -95,7 +95,7 @@ python SingleStepPred.py
 
 ## 🔮 New Prediction
 
-For predicting complete CRMs, run:
+To predict complete CRMs, specify the input SMILES in the `NewCRM_Prediction.py` script and execute
 
 ```bash
 python NewCRM_Prediction.py
@@ -109,7 +109,7 @@ If you use **DeepMech** in your research, please cite it as:
 
 ```bibtex
 @misc{deepmech2025,
-  title        = {DeepMech: Interpretable Graph-based Deep Learning for Predicting Complete Chemical Reaction Mechanisms},
+  title        = {DeepMech: A Machine Learning Framework for Chemical Reaction Mechanism Prediction},
   author       = {},
   year         = {2025},
   howpublished = {\url{https://github.com/alhqlearn/DeepMech}},
