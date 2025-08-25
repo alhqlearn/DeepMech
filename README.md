@@ -80,7 +80,7 @@ python preprocessing/Run_preprocessing.py -d ID_Split42
 Train your model using:
 
 ```bash
-python scripts/TrainWithAcc.py -d ID_Split42 -m my_model
+python scripts/TrainWithAcc.py -d ID_Split42 -m Split42
 ```
 
 ---
@@ -107,7 +107,7 @@ python AttFP_ID_CRM_infer.py
 For predicting complete CRMs, run:
 
 ```bash
-python xyz.py -d ID_Split42 -m my_model
+python xyz.py -d ID_Split42 -m Split42
 ```
 
 ---
@@ -115,4 +115,4 @@ python xyz.py -d ID_Split42 -m my_model
 ## 📌 Notes
 
 - Ensure all SMILES in your dataset are **atom-mapped**.  
-- The same `-d my_data` and `-m my_model` flags should be consistently used across preprocessing, training, and testing.  
+- The same `-d my_data` and `-m Split42` flags should be consistently used across preprocessing, training, and testing.  
