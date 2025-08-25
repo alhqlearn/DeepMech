@@ -24,13 +24,27 @@ pip install dgllife
 ---
 
 
-## 📂 Download Dataset and Model
+## 📂 Download Dataset and Model  
 
-Download the dataset and model from the following link, and then keep in `./data/ID_Split42` and `./models` folder, respectively.
-https://drive.google.com/drive/folders/1t3pK0Qg9OHp7b5rTq1Db2zrVqq1fQD_1?usp=sharing
+Download the dataset and model from the following link, and place them in the respective folders:  
 
+- Dataset → `./data/ID_Split42`  
+- Model → `./models`  
 
+🔗 [Google Drive Link](https://drive.google.com/drive/folders/1t3pK0Qg9OHp7b5rTq1Db2zrVqq1fQD_1?usp=sharing)  
 
+---
+
+### 📑 Creating a New Dataset  
+
+If you want to create a new dataset, prepare the `.txt` files and place them in:  
+
+Required files:  
+- `train.txt`  
+- `val.txt`  
+- `test.txt`  
+
+Each file should contain **atom-mapped elementary steps** in **SMILES format**, one per line.  
 ---
 
 ## 📂 Prepare Your Dataset
