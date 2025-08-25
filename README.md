@@ -93,8 +93,10 @@ python SingleStepPred.py
 ```
 
 ### (b) Full ID-CRM prediction
-1. Train the Reaction Classifier. Load the trained model in the reactivity_classifier_AttentiveFP.py file
-2. Run inference:  
+1. Train the Reaction Classifier.
+1a) To train the Reaction Classifier run the Reaction_Classifier/Training_Reaction_Classifier.ipynb file.
+1b) Next, load the trained model in the reactivity_classifier_AttentiveFP.py file
+3. Run inference:  
 
 ```bash
 python AttFP_ID_CRM_infer.py 
@@ -102,7 +104,7 @@ python AttFP_ID_CRM_infer.py
 
 ---
 
-## 🔮 Prediction
+## 🔮 New Prediction
 
 For predicting complete CRMs, run:
 
