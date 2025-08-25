@@ -19,8 +19,8 @@ import math
 from my_inference_utils import  process_results, calculate_top_k_accuracies, compute_top_n_accuracy
 #----------------------------------Loading init_DeepMech-----------------------------
 
-dataset = 'my_data' # get the info of derived templates
-scenario = 'my_model'
+dataset = 'ID_Split42' # get the info of derived templates
+scenario = 'Split42'
 device = 'cuda' # cpu or cuda
 model_name = 'DeepMech_%s' % scenario
 model_path = 'models/%s.pth' % model_name
