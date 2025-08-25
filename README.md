@@ -44,23 +44,6 @@ Each file should contain **atom-mapped elementary steps** in **SMILES format**, 
 
 ---
 
-## 📂 Prepare Your Dataset
-
-1. Create a directory inside `./data`, e.g.  
-
-   ```bash
-   mkdir ./data/my_data
-   ```
-
-2. Place the following files in `./data/my_data`:  
-   - `train.txt`  
-   - `val.txt`  
-   - `test.txt`  
-
-   Each file should contain **atom-mapped elementary steps (SMILES format)**, one per line.  
-
----
-
 ## ⚙️ Preprocessing
 
 Run preprocessing scripts inside `./preprocessing`:
@@ -87,20 +70,26 @@ python scripts/TrainWithAcc.py -d ID_Split42 -m Split42
 
 ## ✅ Testing
 
-### (a) Single-step prediction
+### (a) Single-step Prediction
+Run:
 ```bash
-python SingleStepPred.py 
+python SingleStepPred.py
 ```
 
-### (b) Full ID-CRM prediction
-1. Train the Reaction Classifier.
-1a) To train the Reaction Classifier run the Reaction_Classifier/Training_Reaction_Classifier.ipynb file.
-1b) Next, load the trained model in the reactivity_classifier_AttentiveFP.py file
-3. Run inference:  
+### (b) Full ID-CRM Prediction
 
-```bash
-python AttFP_ID_CRM_infer.py 
-```
+1. **Train the Reaction Classifier**  
+   ```bash
+   Reaction_Classifier/Training_Reaction_Classifier.ipynb
+   ```
+
+2. **Load the Trained Model**  
+   - Update the file `reactivity_classifier_AttentiveFP.py` with the trained model path.  
+
+3. **Run Inference**  
+   ```bash
+   python AttFP_ID_CRM_infer.py
+   ```
 
 ---
 
@@ -114,4 +103,18 @@ python NewCRM_Prediction.py
 
 ---
 
+## 📑 Citation
+
+If you use **DeepMech** in your research, please cite it as:  
+
+```bibtex
+@misc{deepmech2025,
+  title        = {DeepMech: Interpretable Graph-based Deep Learning for Predicting Complete Chemical Reaction Mechanisms},
+  author       = {Your Name and Collaborators},
+  year         = {2025},
+  howpublished = {\url{https://github.com/alhqlearn/DeepMech}},
+}
+```
+
+---
 
