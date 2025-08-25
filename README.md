@@ -114,7 +114,4 @@ python NewCRM_Prediction.py
 
 ---
 
-## 📌 Notes
 
-- Ensure all SMILES in your dataset are **atom-mapped**.  
-- The same `-d my_data` and `-m Split42` flags should be consistently used across preprocessing, training, and testing.  
