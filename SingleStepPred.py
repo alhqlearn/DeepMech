@@ -167,8 +167,8 @@ import time
 st_time = time.time()
 
 #------------CHANGE HERE-----------------------------------------
-dataset = 'my_data' # get the info of derived templates
-scenario = 'my_model'
+dataset = 'ID_Split42' # get the info of derived templates
+scenario = 'Split42'
 #--------------------------------------------------------------
 device = 'cuda' # cpu or cuda
 model_name = 'DeepMech_%s' % scenario
@@ -178,8 +178,8 @@ data_dir = 'data/%s' % dataset
 args = {'data_dir': data_dir, 'model_path': model_path, 'config_path': config_path, 'device': device, 'mode': 'test'}
 modelx, graph_functions, template_dicts, template_infos = init_DeepMech(args)
 #-----------------------CHANGE HERE--------------------------
-input_file = "./data/my_data/test.txt"  # Your .txt file containing reaction pairs
-output_file = './data/my_data/SingleStepPredOut.csv' # Output CSV file to save predictions
+input_file = "./data/ID_Split/test.txt"  # Your .txt file containing reaction pairs
+output_file = './data/ID_Split/SingleStepPredOut.csv' # Output CSV file to save predictions
 #----------------------------------------------------------------
 predictions, accuracy = process_file(input_file, output_file, max_k=5)
 en_time = time.time()
