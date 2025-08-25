@@ -110,7 +110,7 @@ If you use **DeepMech** in your research, please cite it as:
 ```bibtex
 @misc{deepmech2025,
   title        = {DeepMech: Interpretable Graph-based Deep Learning for Predicting Complete Chemical Reaction Mechanisms},
-  author       = {Your Name and Collaborators},
+  author       = {},
   year         = {2025},
   howpublished = {\url{https://github.com/alhqlearn/DeepMech}},
 }
