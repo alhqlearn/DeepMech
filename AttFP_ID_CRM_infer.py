@@ -126,7 +126,7 @@ x = results[0][1].split(' ')
 #print(results)
 
 #------------------------------------------CHANGE HERE: GIVE THE PATH TO THE CSV FILE-----------------------
-df = pd.read_csv("") 
+df = pd.read_csv("data/ID_Split42/crm_data.csv") 
 print('total samples number:', df.shape)
 #--------------------------------------------------------------------------------------------------------------
 
