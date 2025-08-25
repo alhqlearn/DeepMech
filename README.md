@@ -107,7 +107,7 @@ python AttFP_ID_CRM_infer.py
 For predicting complete CRMs, run:
 
 ```bash
-python xyz.py -d ID_Split42 -m Split42
+python NewCRM_Prediction.py
 ```
 
 ---
