@@ -21,7 +21,12 @@ conda install -c conda-forge rdkit -y
 conda install -c dglteam dgl-cuda11.3 -y
 pip install dgllife
 ```
+---
 
+## 📂 Download Dataset and Model
+Download the dataset and model from the following link, and then keep in 
+https://drive.google.com/drive/folders/1t3pK0Qg9OHp7b5rTq1Db2zrVqq1fQD_1?usp=sharing
+---
 ---
 
 ## 📂 Prepare Your Dataset
