@@ -197,7 +197,7 @@ e_feats = bond_featurizer.feat_size('he')
 
 # Load trained model
 #-------------id trained model-----
-model_path = './models/ID_Reaction_Classifier'  #HERE YOU HAVE TO GIVE THE TRAININED MODEL FILE PATH
+model_path = './Reaction_Classifier/ID_Reaction_Classifier'  #HERE YOU HAVE TO GIVE THE TRAININED MODEL FILE PATH
 print('This model is used:', model_path)
 
 
