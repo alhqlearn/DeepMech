@@ -26,6 +26,9 @@ pip install dgllife
 
 ## 📂 Download Dataset and Model  
 
+conda env create --name new_env_name -f environment.yml
+
+
 Download the dataset and model from the following link, and place them in the respective folders:  
 
 - Dataset → `./data/ID_Split42`  
