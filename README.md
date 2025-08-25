@@ -23,13 +23,13 @@ pip install dgllife
 ```
 ---
 
----
+
 ## 📂 Download Dataset and Model
 
 Download the dataset and model from the following link, and then keep in `./data/ID_Split42` and `./models` folder, respectively.
 https://drive.google.com/drive/folders/1t3pK0Qg9OHp7b5rTq1Db2zrVqq1fQD_1?usp=sharing
 
----
+
 
 ---
 
