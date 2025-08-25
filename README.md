@@ -33,8 +33,6 @@ Download the dataset and model from the following link, and place them in the re
 
 🔗 [Google Drive Link](https://drive.google.com/drive/folders/1t3pK0Qg9OHp7b5rTq1Db2zrVqq1fQD_1?usp=sharing)  
 
-### 📑 Creating a New Dataset  
-
 If you want to create a new dataset, prepare the `.txt` files and place them in:  
 
 Required files:  
