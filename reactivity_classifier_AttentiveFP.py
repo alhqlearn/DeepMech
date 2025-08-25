@@ -196,12 +196,6 @@ n_feats = atom_featurizer.feat_size('hv')
 e_feats = bond_featurizer.feat_size('he')
 
 # Load trained model
-#-------------oob trained model-----
-#model_path = 'trained_classifier_reactive_or_nonreactive_10_07_25'  # Make sure this file exists
-#model_path = 'trained_classifier_reactive_or_nonreactive_10_07_25_trial1'
-#model_path = 'trained_classifier_wo_augm_10_07_25_WCE'
-#model_path = 'trained_classifier_wo_augm_10_07_25_WCE_epoch20'
-
 #-------------id trained model-----
 model_path = './models/ID_Reaction_Classifier'  #HERE YOU HAVE TO GIVE THE TRAININED MODEL FILE PATH
 print('This model is used:', model_path)
