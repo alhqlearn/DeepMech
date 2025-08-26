@@ -14,8 +14,6 @@ cd DeepMech
 # Create and activate virtual environment
 conda create -c conda-forge -n deepmech python=3.6 -y
 conda activate deepmech
-
-# Install dependencies
 conda install pytorch cudatoolkit=11.3 -c pytorch -y
 conda install -c conda-forge rdkit -y
 conda install -c dglteam dgl-cuda11.3 -y
