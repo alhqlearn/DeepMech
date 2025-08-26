@@ -21,6 +21,9 @@ conda install -c conda-forge rdkit -y
 conda install -c dglteam dgl-cuda11.3 -y
 pip install dgllife
 ```
+You can also set up the environment using the environment.yml file by running:
+`conda env create --name deepmech -f environment.yml`
+
 ---
 
 
