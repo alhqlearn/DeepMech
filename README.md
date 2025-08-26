@@ -21,6 +21,7 @@ conda install -c conda-forge rdkit -y
 conda install -c dglteam dgl-cuda11.3 -y
 pip install dgllife
 ```
+
 You can also set up the environment using the environment.yml file by running:
 `conda env create --name deepmech -f environment.yml`
 
@@ -28,9 +29,6 @@ You can also set up the environment using the environment.yml file by running:
 
 
 ## 📂 Download Dataset and Model  
-
-conda env create --name new_env_name -f environment.yml
-
 
 Download the dataset and model from the following link, and place them in the respective folders:  
 
