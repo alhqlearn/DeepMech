@@ -101,7 +101,7 @@ def model_predict(reactants):
     verbose = False
     results_df, results_dict = predict_product(args, reactants, modelx, graph_functions,
                                            template_dicts, template_infos,
-                                           verbose = verbose, sep = sep, collect_n = 100)
+                                           verbose = verbose, sep = sep, collect_n = 200)
 
     #print('before:', results_dict)
     #adding the heuristic here:
