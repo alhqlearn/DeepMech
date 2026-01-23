@@ -33,14 +33,56 @@ def combine_dict(d1, d2):
     return d2
     
 
+#def match_each(preds, trues, matched_idx, ):
+#    '''
+#    first match_each modification that we did
+#    this resolved the halting problem for large permutations, but
+#    couldn't solve the exact problem pertaining to aromatic system
+#    '''
+#    import random
+#    num_samples = 500
+#    #perms = list(permutations(preds, len(trues))) #for a large number of preds this stops, n!/(n-r)! permutation
+#    all_perms = permutations(preds, len(trues))
+#    perms = list(islice(all_perms, num_samples))
+#    #perms = random.sample(all_perms, min(num_samples, len(all_perms))) #can't do with the generator
+#    if len(preds) < len(trues):
+#        return []
+#
+#    ts = [item for elem in trues for item in elem]
+#    ms = []
+#    for perm in perms:
+#        ps = [item for elem in perm for item in elem]
+#        m = {t:p for t, p in zip(ts, ps) if t != -1}
+#        combined_dict = combine_dict(m, copy.copy(matched_idx))
+#        if combined_dict:
+#            ms.append(combined_dict)
+#    return ms
+
+
+import copy
+
+def populate_with_duplicate(bond_idxs):
+  example = copy.deepcopy(bond_idxs)
+  for i, j in example:
+    if [j, i] in example:
+      continue
+    else:
+      example.append([j,i])
+  return example
 
 
 
 def match_each(preds, trues, matched_idx):
     #print('preds:-->', preds, '\n')
-    #print('trues:--->', trues, '\n')
+    #print('trues:--->', trues, len(trues), len(preds), '\n')
+    #exit()
+
+    #preds = populate_with_duplicate(preds)
+    #print(preds)
+    #exit()
+
     import random
-    if len(trues) <= 6:
+    if len(trues) <= 5:
         #print('permutation for less than 6:', trues)
         #num_samples = 720
         #perms = list(permutations(preds, len(trues))) #for a large number of preds this stops, n!/(n-r)! permutation
@@ -58,9 +100,10 @@ def match_each(preds, trues, matched_idx):
             combined_dict = combine_dict(m, copy.copy(matched_idx))
             if combined_dict:
                 ms.append(combined_dict)
-    elif len(trues) > 6:
-        print('subgraph is greater than 6:', trues)
+    elif len(trues) > 5:
+        #print('subgraph is greater than 6:', trues)
         try:
+            #print('predictions before subg:', preds, '\n')
             perms = graph_isomorphism_match(trues, preds)
             #print('permutation via graph_isomorphism:', perms)
             if len(preds) < len(trues):
@@ -78,16 +121,40 @@ def match_each(preds, trues, matched_idx):
             print(f'An error occured: {e}')
             ms = []
             return ms
-        
-
+    #if len(ms) > 0:
+    #    print('ms:', ms)
+    #    exit()
     return ms
 
 
 
+#def match_each(preds, trues, matched_idx):
+#    from itertools import permutations
+#    import copy
+#
+#    ms = []  # Initialize empty match list
+#
+#    if len(trues) <= 6:
+#        if len(preds) < len(trues):
+#            return []
+#
+#        all_perms = permutations(preds, len(trues))
+#        ts = [item for elem in trues for item in elem]
+#
+#        for perm in all_perms:
+#            ps = [item for elem in perm for item in elem]
+#            m = {t: p for t, p in zip(ts, ps) if t != -1}
+#            combined_dict = combine_dict(m, copy.copy(matched_idx))
+#            if combined_dict:
+#                ms.append(combined_dict)
+#
+#    # If len(trues) > 6, do nothing (but function continues and returns empty list)
+#    return ms
 
 
 
 def graph_isomorphism_match(trues, preds):
+    #print(f'trues and preds: {trues}, \n, {preds}\n')
     # Define graph G
     G = nx.Graph()
     G.add_edges_from(preds)
@@ -118,7 +185,26 @@ def graph_isomorphism_match(trues, preds):
 
 
 
+'''
+original match_each function
 
+def match_each(preds, trues, matched_idx):
+    #this is combination based matching
+    if len(preds) < len(trues):
+        return []
+    
+    ts = [item for elem in trues for item in elem]
+    ms = []
+    
+    for comb in combinations(preds, len(trues)):
+        ps = [item for elem in comb for item in elem]
+        m = {t: p for t, p in zip(ts, ps) if t != -1}
+        combined_dict = combine_dict(m, copy.copy(matched_idx))
+        if combined_dict:
+            ms.append(combined_dict)
+    
+    return ms
+'''
 
 def bidirect_len(bonds, return_len = True):
     bidirected = copy.copy(bonds)
@@ -165,6 +251,12 @@ class Collector():
         self.used_idx = defaultdict(list)
         self.predicted_roles = dict()
 
+    #def clean_small_frags(self, products):
+    #    if '[IH3]' in products:
+    #        products = products.replace('[IH3]', '[IH]')
+    #    return  '.'.join([product for product in products.split('.') if Chem.MolFromSmiles(product).GetNumAtoms() >= self.min_n_atoms])
+        
+        
     def clean_small_frags(self, products):
         # Replace '[IH3]' with '[IH]' in the products string
         if '[IH3]' in products:
@@ -207,21 +299,44 @@ class Collector():
                 #print('input to the matched_idx:\n', preds[edit_type], trues[edit_type], matched_idx, template_full, '\n')
 
                 matched_idx = match_each(preds[edit_type], trues[edit_type], matched_idx)
+                #if edit_type == 'C' and len(matched_idx) > 0:
+                #    print('matched_idx', matched_idx)
+                #    exit()
+                #if len(matched_idx)> 0:
+                    #print(matched_idx)
                 new_matched_idxs += matched_idx
             matched_idxs = new_matched_idxs
+        #if len(matched_idx) > 0:
+        #    print(matched_idxs)
+        #    exit()
         matched_idxs = list(map(dict, set(tuple(sorted(d.items())) for d in matched_idxs if len(d) >= n_required_idx)))
+        #print(matched_idxs)
+        #if len(matched_idxs)> 0:
+        #    print(matched_idxs)
+        #    exit()
+    
         outputs = []
         for matched_id in matched_idxs:
             recorded_actions = self.template_scores[template_full]
+            #print('recorded_actions', recorded_actions)
+            #print('corresponding matched_id', matched_id)
             try:
                 pred_actions = self.reconstruct_actions(trues, matched_id, recorded_actions)
-                if sum([action not in recorded_actions for action in pred_actions]) > 0:
-                    continue
-                else:
-                    outputs.append([matched_id, pred_actions])
+                #print('pred_actions:', pred_actions)
+                #if sum([action not in recorded_actions for action in pred_actions]) > 0:
+                #    continue
+                #else:
+                #    outputs.append([matched_id, pred_actions])
+                outputs.append([matched_id, pred_actions])
             except Exception as e:
+                #print('here is the bug')
                 if self.verbose:
                     print (e)
+        #print('lenght of ouputs:', len(outputs)) 
+        #if len(outputs)> 0:
+        #    print(outputs)
+        #    exit()
+
         return outputs
 
   
@@ -239,7 +354,7 @@ class Collector():
         #print(f"template_actions:\n{template_actions}")
         n_required_idx = len(set([atom for temp_action, bonds in template_actions.items() for bond in bonds for atom in bond if temp_action != 'R']))
         change_bond_only = len(template_actions['A']) + len(template_actions['B']) + len(template_actions['R']) == 0
-        print(f"change_bond_only:\n{change_bond_only}")
+        #print(f"change_bond_only:\n{change_bond_only}")
         if change_bond_only:
             for i in pred_idx:
                 self.template_scores[template_full][i] = score
@@ -247,7 +362,7 @@ class Collector():
             if pred_action != 'R':
                 pred_mech = '%s_%s_%s' % (pred_action, pred_idx[0], pred_idx[1])
                 pred_mech_inv = '%s_%s_%s' % (pred_action, pred_idx[1], pred_idx[0])
-                print(f"pred_mech, pred_mech_inv:\n{pred_mech}, {pred_mech_inv}")
+                #print(f"pred_mech, pred_mech_inv:\n{pred_mech}, {pred_mech_inv}")
                 if pred_mech not in self.template_scores[template_full]:
                     self.template_scores[template_full][pred_mech] = score
                     if pred_action == 'C':
@@ -347,7 +462,7 @@ class Collector():
                     for idx in eval(matched_idx).values():
                         if 'C_%s' % idx not in pred_actions and idx in pred_idxs:
                             pred_actions.append('C_%s' % idx) 
-            print('matched_products:', matched_products)
+            #print('matched_products:', matched_products)
             if self.verbose:
                 print ('matched_products:', matched_products)
                 print (pred_actions)
@@ -403,6 +518,13 @@ class Collector():
          
         #print ('predicted product(s):', newly_predicted)
         #print('self.old_predictions:', self.old_predictions)
+        '''
+        for act in pred_actions:
+            act_list = act.split('_')
+            new_act = act_list[0]+'_'+act_list[2]+'_'+act_list[1]
+            score = self.template_scores[template_full][act]
+            self.template_scores[template_full][new_act] = score
+        '''
         if len(newly_predicted) != 0:
             if len(newly_predicted[0]) == 0:
                 return 
@@ -411,8 +533,16 @@ class Collector():
             if change_bond_only:
                 score = np.average([self.template_scores[template_full][int(action.split('_')[1])] for action in pred_actions])
             else:
-                score = np.average([self.template_scores[template_full][action] for action in pred_actions])
-            
+                score_list = []
+                for action in pred_actions:
+                    try:
+                        score_list.append(self.template_scores[template_full][action])
+                    except:
+                        score_list.append(0.0001)
+                score = np.average(score_list)
+                #score = np.average([self.template_scores[template_full][action] for action in pred_actions])
+                                
+                            
             if predicted_product not in self.predictions:
                 self.predictions[predicted_product] = {'template':fit_temp, 'pred_actions': pred_actions, 'pred_idx':pred_idxs, 'score':score}
         return
