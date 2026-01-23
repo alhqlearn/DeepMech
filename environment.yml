@@ -1,4 +1,4 @@
-name: rdenv
+name: deepmech
 channels:
   - pytorch
   - dglteam
