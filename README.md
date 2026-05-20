@@ -29,12 +29,12 @@ pip install dgllife
 
 ## 📂 Download Dataset and Model  
 
-Download the dataset and model from the following link, and place them in the respective folders:  
+Download the dataset and model from the following zenodo link, and place them in the respective folders:  
 
 - Dataset → `./data/ID_Split42`  
 - Model → `./models`  
 
-🔗 [Google Drive Link](https://drive.google.com/drive/folders/1t3pK0Qg9OHp7b5rTq1Db2zrVqq1fQD_1?usp=sharing)  
+🔗 https://doi.org/10.5281/zenodo.20305780
 
 If you want to create a new dataset, prepare the `.txt` files and place them in e.g., `./data/my_data`
 
